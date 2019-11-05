@@ -4,50 +4,56 @@ import Spinner from '../spinner';
 import ErrorButton from '../error-button';
 import SwapiService from '../../services/swapi-service';
 
-import './person-details.css';
+import './item-details.css';
 
-export default class PersonDetails extends Component {
+export default class ItemDetails extends Component {
 
   swapiService = new SwapiService();
 
   state = {
-    person: null,
+    item: null,
+    image: null,
     loading: false
   }
 
   componentDidMount() {
-    this.updatePerson();
+    this.updateItem();
   }
 
   componentDidUpdate(prevProps) {
     if(this.props.personId !== prevProps.personId) {
-      this.updatePerson();
+      this.updateItem();
     }    
   }
 
-  updatePerson() {
-    const { personId } = this.props;
+  updateItem() {
+    const { itemId, getData, getImageUrl } = this.props;
     this.setState({loading: true});
-    if(!personId) {
+    if(!itemId) {
       this.setState({loading: false});
       return;
     }
 
-    this.swapiService
-      .getPerson(personId)
-      .then(person => this.setState({ person, loading: false }));
+    getData(itemId)
+    .then(item => {
+      this.setState({ 
+        item, 
+        loading: false, 
+        image: getImageUrl(item) 
+      })
+    });
   };
 
   render() {
-    const {person, loading} = this.state; 
+    const { item, loading, image } = this.state; 
 
-    if(!person) {
+    if(!item) {
       return <span>Select a person from a list</span>;
     }
 
     const spinner = loading ? <Spinner /> : null;
 
-    const { id, name, gender, birthYear, eyeColor } = person;
+    const { id, name, gender, birthYear, eyeColor } = item;
 
     return(
       <div className="person-details card">
@@ -55,7 +61,7 @@ export default class PersonDetails extends Component {
         <Spinner /> :
         <Fragment>
         <img className="person-image"
-            src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`} alt="person"/>
+            src={image} alt="person"/>
         <div className="card-body">
           <h4>{name}</h4>
           <ul className="list-group list-group-flush">
