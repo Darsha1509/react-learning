@@ -34,6 +34,10 @@ export default class App extends Component {
   componentDidCatch() {
     this.setState({hasError: true})
   }
+
+  onServiceChange = () => {
+    console.log('Change Context Value');
+  }
   
 
   render() {
