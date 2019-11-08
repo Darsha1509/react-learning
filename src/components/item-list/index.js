@@ -1,3 +1,3 @@
-import ListItem from './item-list';
+import ItemList from './item-list';
 
-export default ListItem;
+export default ItemList;
