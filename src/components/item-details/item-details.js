@@ -33,7 +33,9 @@ export default class ItemDetails extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.itemId !== prevProps.itemId) {
+    if (this.props.itemId !== prevProps.itemId || 
+        this.props.getData !== prevProps.getData ||
+        this.props.getImageUrl !== prevProps.getImageUrl) {
       this.updateItem();
     }
   }
@@ -60,17 +62,14 @@ export default class ItemDetails extends Component {
       return <span>Select a item from a list</span>;
     }
 
-    const { id, name, gender,
-              birthYear, eyeColor } = item;
-
     return (
       <div className="person-details card">
-        <img className="item-image"
+        <img className="item-image person-image"
           src={image}
           alt="item"/>
 
         <div className="card-body">
-          <h4>{name}</h4>
+          <h4>{item.name}</h4>
           <ul className="list-group list-group-flush">
             {
               React.Children.map(this.props.children, (child) => {

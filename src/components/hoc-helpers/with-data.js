@@ -8,6 +8,8 @@ const withData = (View) => {
 
     state = {
       data: null,
+      loading: true,
+      error: false
     }
   
     componentDidMount() { 
@@ -15,11 +17,29 @@ const withData = (View) => {
         .then((data) => this.setState({ data }));
     }
 
-    render() {
-      const { data } = this.state;
+    componentDidUpdate(prevProps) {
+      if (this.props.getData !== prevProps.getData) {
+        this.update();
+      }
+    }
 
-      if(!data) {
+    update() {
+      this.props.getData()
+        .then((data) => {
+          this.setState({ data });
+        })
+        .catch(() => this.setState({ error: true, loading: false }));
+    }
+
+    render() {
+      const { data, loading, error } = this.state;
+
+      if(!data && loading) {
         return <Spinner />
+      }
+
+      if(error) {
+        return <ErrorIndicator />
       }
 
       return <View {...this.props} data={data} />
